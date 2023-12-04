@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>images.io</title>
+  <style>
+	#preview-container {
+      max-width: 300px;
+      max-height: 220px;
+      margin: 5px;
+      border: 1px solid #ccc;
+    }
+    #imageContainer {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 50px;
+    }
+
+    img {
+      max-width: 250px;
+      max-height: 250px;
+      margin: 5px;
+      cursor: grab;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <label for="imagePaste">Paste Images:</label>
+    <textarea id="imagePaste" rows="4" cols="50"></textarea>
+  </div>
+
+  <div id="imageContainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <!-- Images will be displayed here -->
+  </div>
+
+  <script>
+    const imagePaste = document.getElementById('imagePaste');
+    const imageContainer = document.getElementById('imageContainer');
+
+    imagePaste.addEventListener('paste', function(event) {
+      event.preventDefault();
+      const clipboardData = event.clipboardData || window.clipboardData;
+
+      if (clipboardData) {
+        for (let i = 0; i < clipboardData.items.length; i++) {
+          if (clipboardData.items[i].type.indexOf('image') !== -1) {
+            const imageBlob = clipboardData.items[i].getAsFile();
+            displayImage(imageBlob);
+          }
+        }
+      }
+    });
+
+    function displayImage(imageBlob) {
+      const imgElement = document.createElement('img');
+      const imageURL = URL.createObjectURL(imageBlob);
+      imgElement.src = imageURL;
+      imgElement.draggable = true;
+      imgElement.addEventListener('dragstart', function(event) {
+        // Set the drag data to the image URL
+        event.dataTransfer.setData('text/plain', imageURL);
+      });
+      imgElement.onload = function() {
+        URL.revokeObjectURL(imageURL);
+      };
+      imageContainer.appendChild(imgElement);
+    }
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      const data = event.dataTransfer.getData('text/plain');
+      const draggedImage = document.querySelector(`img[src="${data}"]`);
+
+      if (draggedImage) {
+        // Get the mouse coordinates
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        // Get the closest image to the mouse coordinates
+        const closestImage = document.elementFromPoint(mouseX, mouseY);
+        
+        // Insert the dragged image before the closest image
+        if (closestImage && closestImage.tagName === 'IMG') {
+          closestImage.parentNode.insertBefore(draggedImage, closestImage);
+        } else {
+          imageContainer.appendChild(draggedImage);
+        }
+      }
+    }
+  </script>
+</body>
+  <div id="preview-container"> 
+    <iframe id="preview-frame" src="draw.html" frameborder="0"></iframe>
+  </div>
+  
+  <button id="reload-button" onclick="reloadPreview()">clear draw.html</button>
+
+  <script>
+    function reloadPreview() {
+      var previewFrame = document.getElementById('preview-frame');
+      var currentSrc = previewFrame.src;
+      previewFrame.src = '';
+      previewFrame.src = currentSrc;
+    }
+  </script>
+</html>
