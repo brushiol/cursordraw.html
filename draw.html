@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cursord.io</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="drawingCanvas"></canvas>
+
+    <script>
+        // Get the canvas element and its context
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set the canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Set initial drawing properties
+        ctx.strokeStyle = 'purple';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'square';
+
+        let isDrawing = false;
+
+        // Event listeners to handle drawing
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e); // Start drawing from the initial click point
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            // Draw a line to the current mouse position
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+
+            // Move the pen to the current mouse position
+            ctx.beginPath();
+            ctx.moveTo(e.clientX, e.clientY);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath(); // Reset the path
+        }
+
+        // Adjust canvas size on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
