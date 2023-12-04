@@ -9,35 +9,30 @@
 	#preview-container {
       max-width: 300px;
       max-height: 220px;
-      margin: 5px;
-      border: 1px solid #ccc;
+      margin-top: 5px;
     }
     #imageContainer {
       display: flex;
       flex-wrap: wrap;
-      margin-top: 50px;
     }
 
     img {
       max-width: 250px;
       max-height: 250px;
-      margin: 5px;
       cursor: grab;
     }
   </style>
 </head>
-<body>
-  <div>
-    <label for="imagePaste">Paste Images:</label>
-    <textarea id="imagePaste" rows="4" cols="50"></textarea>
+<body style="background-color: #D7BDE2">
+  <div> 
+  <textarea style="background-color: #E8DAEF" id="imagePaste" rows="4" cols="50"></textarea>
   </div>
-
+  
   <div id="imageContainer" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <!-- images displayed here -->
   </div>
 
-  <button onclick="saveImages()">Save Images</button>
-  <button onclick="loadImages()">Load Images</button>
+  <button onclick="saveImages()">save curr</button>
+  <button onclick="loadImages()">load prev</button>
 
   <script>
     const imagePaste = document.getElementById('imagePaste');
@@ -66,6 +61,13 @@
         imgElement.addEventListener('dragstart', function(event) {
           event.dataTransfer.setData('text/plain', event.target.src);
         });
+
+        imgElement.addEventListener('auxclick', function(event) {
+          if (event.button === 1) {
+            deleteImage(imgElement);
+          }
+        });
+
         imageContainer.appendChild(imgElement);
       };
       reader.readAsDataURL(imageBlob);
@@ -93,6 +95,10 @@
       }
     }
 
+    function deleteImage(imgElement) {
+      imgElement.parentNode.removeChild(imgElement);
+    }
+
     function saveImages() {
       const imageUrls = Array.from(document.querySelectorAll('#imageContainer img')).map(img => img.src);
       localStorage.setItem('savedImages', JSON.stringify(imageUrls));
@@ -113,6 +119,16 @@
           imgElement.addEventListener('dragstart', function(event) {
             event.dataTransfer.setData('text/plain', imageUrl);
           });
+
+          imgElement.addEventListener('auxclick', function(event) {
+            if (event.button === 1) {
+              deleteImage(imgElement);
+            }
+			if (event.button === 2) {
+              deleteImage(imgElement);
+            }
+          });
+
           imageContainer.appendChild(imgElement);
         });
       }
@@ -120,10 +136,10 @@
   </script>
 </body>
   <div id="preview-container"> 
-    <iframe id="preview-frame" src="draw.html" frameborder="0"></iframe>
+    <iframe style="background-color: #E8DAEF; border: 5px solid #BB8FCE;" id="preview-frame" src="draw.html" frameborder="0"></iframe>
   </div>
   
-  <button id="reload-button" onclick="reloadPreview()">clear draw.html</button>
+  <button  id="reload-button" onclick="reloadPreview()">reload page</button>
 
   <script>
     function reloadPreview() {
@@ -134,4 +150,8 @@
     }
   </script>
 </html>
+<br>
+to insert image paste it into the texbox at the top of the page
+<br>
+middle or right click an image to delete them
 <!-- chat gpt helped out a lot in this so thanks open ai  -->
