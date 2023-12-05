@@ -25,7 +25,7 @@
 </head>
 <body style="background-color: #D7BDE2">
   <div> 
-  <textarea style="background-color: #E8DAEF" id="imagePaste" rows="4" cols="50"></textarea>
+    <textarea style="background-color: #E8DAEF" id="imagePaste" rows="4" cols="50"></textarea>
   </div>
   
   <div id="imageContainer" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -62,8 +62,12 @@
           event.dataTransfer.setData('text/plain', event.target.src);
         });
 
-        imgElement.addEventListener('auxclick', function(event) {
-          if (event.button === 1) {
+        imgElement.addEventListener('mousedown', function(event) {
+          if (event.button === 0) {
+            // Left click
+            // Handle any left-click behavior if needed
+          } else if (event.button === 1 || event.button === 2) {
+            // Middle or right click
             deleteImage(imgElement);
           }
         });
@@ -120,11 +124,12 @@
             event.dataTransfer.setData('text/plain', imageUrl);
           });
 
-          imgElement.addEventListener('auxclick', function(event) {
-            if (event.button === 1) {
-              deleteImage(imgElement);
-            }
-			if (event.button === 2) {
+          imgElement.addEventListener('mousedown', function(event) {
+            if (event.button === 0) {
+              // Left click
+              // Handle any left-click behavior if needed
+            } else if (event.button === 1 || event.button === 2) {
+              // Middle or right click
               deleteImage(imgElement);
             }
           });
