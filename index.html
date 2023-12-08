@@ -35,6 +35,8 @@
 
   <button onclick="saveImages()">save curr</button>
   <button onclick="loadImages()">load prev</button>
+  <button onclick="saveImagesToXml()">save curr file</button>
+  <button onclick="loadImagesFromXml()">load prev file</button>
 
   <script>
     const imagePaste = document.getElementById('imagePaste');
@@ -66,7 +68,6 @@
 
         imgElement.addEventListener('mousedown', function(event) {
           if (event.button === 0) {
-			// ill add something here later
           } else if (event.button === 1 || event.button === 2) {
             deleteImage(imgElement);
           }
@@ -126,8 +127,7 @@
 
           imgElement.addEventListener('mousedown', function(event) {
             if (event.button === 0) {
-			// ill add something here later
-            } else if (event.button === 1 || event.button === 2 ) {
+            } else if (event.button === 1 || event.button === 2) {
               deleteImage(imgElement);
             }
           });
@@ -135,6 +135,60 @@
           imageContainer.appendChild(imgElement);
         });
       }
+    }
+
+    function saveImagesToXml() {
+      const imageUrls = Array.from(document.querySelectorAll('#imageContainer img')).map(img => img.src);
+      const xmlContent = `<images>${imageUrls.map(url => `<image>${url}</image>`).join('')}</images>`;
+      const blob = new Blob([xmlContent], { type: 'application/xml' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'images.xml';
+      link.click();
+    }
+
+    function loadImagesFromXml() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.xml';
+
+      input.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const xmlContent = event.target.result;
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlContent, 'application/xml');
+            const imageElements = xmlDoc.querySelectorAll('image');
+
+            imageContainer.innerHTML = '';
+
+            imageElements.forEach(imageElement => {
+              const imgElement = document.createElement('img');
+              imgElement.src = imageElement.textContent;
+              imgElement.draggable = true;
+              imgElement.addEventListener('dragstart', function(event) {
+                event.dataTransfer.setData('text/plain', imgElement.src);
+              });
+
+              imgElement.addEventListener('mousedown', function(event) {
+                if (event.button === 0) {
+                } else if (event.button === 1 || event.button === 2) {
+                  deleteImage(imgElement);
+                }
+              });
+
+              imageContainer.appendChild(imgElement);
+            });
+          };
+
+          reader.readAsText(file);
+        }
+      });
+
+      input.click();
     }
   </script>
 </body>
