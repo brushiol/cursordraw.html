@@ -38,12 +38,9 @@
   <button onclick="saveImagesToXml()">save as XML</button>
   <button onclick="loadImagesFromXml()">load from XML</button>
 
-  <input type="file" id="xmlFileInput" style="display:none" accept=".xml">
-
   <script>
     const imagePaste = document.getElementById('imagePaste');
     const imageContainer = document.getElementById('imageContainer');
-    const xmlFileInput = document.getElementById('xmlFileInput');
 
     imagePaste.addEventListener('paste', function(event) {
       event.preventDefault();
@@ -142,26 +139,20 @@
 
     function saveImagesToXml() {
       const imageUrls = Array.from(document.querySelectorAll('#imageContainer img')).map(img => img.src);
-
-      xmlFileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-
-        if (file) {
-          const fileName = file.name;
-          const xmlContent = `<images>${imageUrls.map(url => `<image>${url}</image>`).join('')}</images>`;
-          const blob = new Blob([xmlContent], { type: 'application/xml' });
-          const link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = fileName;
-          link.click();
-        }
-      });
-
-      xmlFileInput.click();
+      const xmlContent = `<images>${imageUrls.map(url => `<image>${url}</image>`).join('')}</images>`;
+      const blob = new Blob([xmlContent], { type: 'application/xml' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'images.xml';
+      link.click();
     }
 
     function loadImagesFromXml() {
-      xmlFileInput.addEventListener('change', function(event) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.xml';
+
+      input.addEventListener('change', function(event) {
         const file = event.target.files[0];
 
         if (file) {
@@ -197,7 +188,7 @@
         }
       });
 
-      xmlFileInput.click();
+      input.click();
     }
   </script>
 </body>
