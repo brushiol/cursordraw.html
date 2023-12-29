@@ -138,14 +138,15 @@
     }
 
     function saveImagesToXml() {
-      const imageUrls = Array.from(document.querySelectorAll('#imageContainer img')).map(img => img.src);
-      const xmlContent = `<images>${imageUrls.map(url => `<image>${url}</image>`).join('')}</images>`;
-      const blob = new Blob([xmlContent], { type: 'application/xml' });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'images.xml';
-      link.click();
-    }
+    	const imageUrls = Array.from(document.querySelectorAll('#imageContainer img')).map(img => img.src);
+    	const fileName = imagePaste.value.trim() || 'images'; // Use the value in the "imagePaste" textbox as the filename, default to 'images' if empty
+    	const xmlContent = `<images>${imageUrls.map(url => `<image>${url}</image>`).join('')}</images>`;
+    	const blob = new Blob([xmlContent], { type: 'application/xml' });
+    	const link = document.createElement('a');
+    	link.href = window.URL.createObjectURL(blob);
+   		link.download = `${fileName}.xml`; // Set the filename here
+    	link.click();
+  	}
 
     function loadImagesFromXml() {
       const input = document.createElement('input');
