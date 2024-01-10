@@ -7,9 +7,7 @@
   <title>images.io</title>
   <style>
 	#preview-container {
-      max-width: 300px;
-      max-height: 220px;
-      margin-top: 5px;
+      
     }
     #imageContainer {
       display: flex;
@@ -194,7 +192,7 @@
   </script>
 </body>
   <div id="preview-container"> 
-    <iframe style="background-color: #E8DAEF; border: 5px solid #BB8FCE;" id="preview-frame" src="draw.html" frameborder="0"></iframe>
+    <iframe style="margin-top: 5px; resize: both; overflow: auto; background-color: #E8DAEF; border: 5px solid #BB8FCE;" id="preview-frame" src="draw.html" frameborder="0"></iframe>
   </div>
   
   <button  id="reload-button" onclick="reloadPreview()">reload page</button>
@@ -209,11 +207,12 @@
   </script>
 </html>
 <br>
-to insert image paste it into the texbox at the top of the page
+to insert image paste it into the textbox at the top of the page
 <br>
-for custom export file name just type in the paste textbox
+for custom export file name just type in the textbox
 <br>
 middle or right click an image to delete them 
+<br>
 <br>
 (right click is janky but still deletes)
 <!-- chat gpt helped out a lot in this so thanks open ai  -->
