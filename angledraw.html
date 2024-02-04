@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angle Draw</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        canvas {
+            border: 2px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Angle Draw</h1>
+    <label for="angleInput">Enter Angle (degrees): </label>
+    <input type="number" id="angleInput" placeholder="Enter angle..." oninput="drawVectorArt()" />
+    <br>
+    <canvas id="vectorCanvas" width="400" height="400"></canvas>
+
+    <script>
+        const circleImage = new Image();
+        circleImage.src = 'circle.png';
+
+        function drawVectorArt() {
+            let angleInput = document.getElementById('angleInput').value;
+            angleInput = parseFloat(angleInput);
+
+            if (angleInput < 0) {
+                angleInput = 359;
+            } else if (angleInput > 359) {
+                angleInput = 0;
+            }
+
+            document.getElementById('angleInput').value = angleInput;
+
+            const canvas = document.getElementById('vectorCanvas');
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            const radians = angleInput * (Math.PI / 180);
+            const x = Math.cos(radians);
+            const y = Math.sin(radians);
+
+            context.drawImage(circleImage, 0, 0, canvas.width, canvas.height);
+
+            context.beginPath();
+            context.moveTo(canvas.width / 2, canvas.height / 2);
+            context.lineTo(canvas.width / 2 + x * (canvas.width / 2), canvas.height / 2 - y * (canvas.height / 2));
+            context.stroke();
+        }
+    </script>
+</body>
+</html>
